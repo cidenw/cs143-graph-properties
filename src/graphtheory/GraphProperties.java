@@ -6,6 +6,7 @@ package graphtheory;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Vector;
@@ -54,36 +55,42 @@ public class GraphProperties {
     }
     public int countComponents() {
     	int count = 0;
-    	for(int i=0; i<adjacencyMatrix.length; i++) {
-    		boolean hasOne = false;
-    		for(int j=0; j<i; j++) {
-    			if(adjacencyMatrix[i][j] == 1) {
-    				hasOne = true;
-    				break;
-    			}
+    	int index = 0;
+    	int noOfVertex = adjacencyMatrix.length;
+    	boolean isVisited[] = new boolean [noOfVertex];
+    	System.out.println("Components:");
+    	for(int i=0; i<noOfVertex; i++) {
+    		if(!isVisited[i]) {
+    			DFS(isVisited, i);
+    			System.out.println();
+        		count++;
     		}
-    		if(!hasOne) {
-    			count++;
-    		}
+    		
     	}
-    	return count;
+    	return count; 	
     	
-    	/*for(int j=0; j<adjacencyMatrix[0].length; j++) {
-    		boolean hasOne = false;
-    		for(int i=0; i<adjacencyMatrix.length; i++) {
-    			if(adjacencyMatrix[i][j] == 1) {
-    				hasOne = true;
-    				break;
-    			}
-    		}
-    		if(!hasOne) {
-    			count++;
-    			continue;
-    		}
-    	}
-    	return count;*/
     }
     
+    public void DFS(boolean isVisited[], int vertex) {
+    	isVisited[vertex] = true;
+    	System.out.print(vertex);
+    	ArrayList<Integer> adjacentNodes = getAdjacentNodes(vertex);
+    	for(int i=0; i<adjacentNodes.size(); i++) {
+    		if(!isVisited[adjacentNodes.get(i)]) {
+        		DFS(isVisited, adjacentNodes.get(i));
+    		}
+    	}
+    }
+    
+    public ArrayList<Integer> getAdjacentNodes(int vertex) {
+    	ArrayList<Integer> adjacentNodes = new ArrayList<Integer>();
+    	for(int i=0; i<adjacencyMatrix[vertex].length; i++) {
+    		if((i!=vertex) && adjacencyMatrix[vertex][i] == 1) {
+    			adjacentNodes.add(i);
+    		}
+    	}
+    	return adjacentNodes;
+    }
     
     public boolean checkConnected() {
     	for(int j=0; j<adjacencyMatrix[0].length; j++) {
