@@ -111,20 +111,60 @@ public class GraphProperties {
     }
     
     public boolean checkCycle() {
-    	for(int i=0,j=0; i<adjacencyMatrix.length; i++,j++) {
-    		if(adjacencyMatrix[i][j] == 1) {
-    			return true;
+    	int count = 0;
+    	int index = 0;
+    	int noOfVertex = adjacencyMatrix.length;
+    	boolean isVisited[] = new boolean [noOfVertex];
+    	for(int i=0; i<noOfVertex; i++) {
+    		if(!isVisited[i]) {
+    			if(DFSCycle(isVisited, i, i))
+    				return true;
     		}
+    		
     	}
-    	
-    	for(int i=0,j=adjacencyMatrix.length-1; i<adjacencyMatrix.length; i++,j--) {
-    		if(adjacencyMatrix[i][j] == 1) {
+    	return false; 
+    }
+       
+    public boolean DFSCycle(boolean isVisited[], int vertex, int parent) {
+    	isVisited[vertex] = true;
+    	System.out.print(vertex);	
+    	ArrayList<Integer> adjacentNodes = getAdjacentNodes(vertex);
+    	for(int i=0; i<adjacentNodes.size(); i++) {
+    		if(!isVisited[adjacentNodes.get(i)]) {
+        		DFSCycle(isVisited, adjacentNodes.get(i), vertex);
+    		}else if(isVisited[adjacentNodes.get(i)] && parent != adjacentNodes.get(i)) {
     			return true;
     		}
     	}
     	return false;
     }
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     public int[][] generateDistanceMatrix(Vector<Vertex> vList) {
         distanceMatrix = new int[vList.size()][vList.size()];
 
@@ -164,22 +204,22 @@ public class GraphProperties {
                 vp = new VertexPair(vList.get(a), vList.get(b));
                 vpList.add(vp);
                 int longestWidth = 0;
-                System.out.println(">Vertex Pair " + vList.get(a).name + "-" + vList.get(b).name + "\n All Paths:");
+                ///System.out.println(">Vertex Pair " + vList.get(a).name + "-" + vList.get(b).name + "\n All Paths:");
                 vp.generateVertexDisjointPaths();
                 for (int i = 0; i < vp.VertexDisjointContainer.size(); i++) {//for every container of the vertex pair
                     int width = vp.VertexDisjointContainer.get(i).size();
                     Collections.sort(vp.VertexDisjointContainer.get(i), new descendingWidthComparator());
                     int longestLength = vp.VertexDisjointContainer.get(i).firstElement().size();
                     longestWidth = Math.max(longestWidth, width);
-                    System.out.println("\tContainer " + i + " - " + "Width=" + width + " - Length=" + longestLength);
+                    ///System.out.println("\tContainer " + i + " - " + "Width=" + width + " - Length=" + longestLength);
 
                     for (int j = 0; j < vp.VertexDisjointContainer.get(i).size(); j++) //for every path in the container
                     {
-                        System.out.print("\t\tPath " + j + "\n\t\t\t");
+                        ///System.out.print("\t\tPath " + j + "\n\t\t\t");
                         for (int k = 0; k < vp.VertexDisjointContainer.get(i).get(j).size(); k++) {
-                            System.out.print("-" + vp.VertexDisjointContainer.get(i).get(j).get(k).name);
+                            ///System.out.print("-" + vp.VertexDisjointContainer.get(i).get(j).get(k).name);
                         }
-                        System.out.println();
+                        ///System.out.println();
                     }
 
                 }
@@ -191,7 +231,7 @@ public class GraphProperties {
                         minLength = Math.min(minLength, vp.VertexDisjointContainer.get(m).size());
                     }
                     if (minLength != 999) {
-                        System.out.println(k + "-wide for vertexpair(" + vp.vertex1.name + "-" + vp.vertex2.name + ")=" + minLength);
+                        ///System.out.println(k + "-wide for vertexpair(" + vp.vertex1.name + "-" + vp.vertex2.name + ")=" + minLength);
                         kWideGraph[k] = Math.max(kWideGraph[k], minLength);
                     }
                 }
@@ -200,7 +240,7 @@ public class GraphProperties {
 
         for (int i = 0; i < kWideGraph.length; i++) {
             if (kWideGraph[i] != -1) {
-                System.out.println("D" + i + "(G)=" + kWideGraph[i]);
+                ///System.out.println("D" + i + "(G)=" + kWideGraph[i]);
             }
         }
 
