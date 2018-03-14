@@ -41,13 +41,20 @@ public class GraphProperties {
 		 * j<adjacencyMatrix[0].length; j++) { System.out.print(adjacencyMatrix[i][j]);
 		 * } System.out.println(); }
 		 */
-		System.out.println("Cycle: " + checkCycle());
+		/*System.out.println("Cycle: " + checkCycle());
 		System.out.println("Is connected: " + checkConnected());
 		System.out.println("No. of components: " + countComponents());
-		findBridge();
+		findBridge();*/
+		minVertexCover(vList, eList);
 		return adjacencyMatrix;
 	}
 
+	public void minVertexCover(Vector<Vertex> vList, Vector<Edge> eList) {
+		for(int i=0; i<vList.size(); i++) {
+			System.out.println(vList.get(i));
+		}
+	}
+	
 	public boolean edgeConnectivity() {
 
 		return false;
