@@ -338,6 +338,7 @@ public class Canvas {
                     //VD paths
                     gP.displayContainers(vertexList);
                 //gP.drawNWideDiameter();
+                    
                 }
                 erase();
             }

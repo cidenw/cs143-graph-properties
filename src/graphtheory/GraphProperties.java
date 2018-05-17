@@ -5,11 +5,18 @@
 package graphtheory;
 
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Stack;
 import java.util.Vector;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
  *
@@ -36,25 +43,131 @@ public class GraphProperties {
 			adjacencyMatrix[vList.indexOf(eList.get(i).vertex1)][vList.indexOf(eList.get(i).vertex2)] = 1;
 			adjacencyMatrix[vList.indexOf(eList.get(i).vertex2)][vList.indexOf(eList.get(i).vertex1)] = 1;
 		}
+		
+		//Properties variables
+		boolean isConnected = isConnected();
+		int noOfComponents = countComponents();
+		boolean isCycle = checkCycle();
+		
+		
+		//OPEN PROPERTIES WINDOW
+        JFrame frame = new JFrame("JFrame Example");
+
+		JPanel panel = new JPanel();
+		panel.setLayout(new FlowLayout());
+
+		JLabel label = new JLabel("This is a label!");
+
+		JButton button = new JButton();
+		button.setText("Press me");
+
+		panel.add(label);
+		panel.add(button);
+
+		frame.add(panel);
+		frame.setSize(300, 300);
+		frame.setLocationRelativeTo(null);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
 		/*
-		 * for(int i=0; i<adjacencyMatrix.length; i++) { for(int j=0;
-		 * j<adjacencyMatrix[0].length; j++) { System.out.print(adjacencyMatrix[i][j]);
-		 * } System.out.println(); }
+		 * System.out.println("Cycle: " + checkCycle());
+		 * System.out.println("Is connected: " + checkConnected());
+		 * System.out.println("No. of components: " + countComponents()); findBridge();
 		 */
-		/*System.out.println("Cycle: " + checkCycle());
-		System.out.println("Is connected: " + checkConnected());
-		System.out.println("No. of components: " + countComponents());
-		findBridge();*/
-		minVertexCover(vList, eList);
+		//maximumMatching(vList, eList);
 		return adjacencyMatrix;
 	}
 
-	public void minVertexCover(Vector<Vertex> vList, Vector<Edge> eList) {
-		for(int i=0; i<vList.size(); i++) {
-			System.out.println(vList.get(i));
+	public void maximumMatching(Vector<Vertex> vList, Vector<Edge> eList) {
+		/*
+		 * int lowestDegree = vList.size(); int indexOfLowestDegree = -1; for (int i =
+		 * 0; i < vList.size(); i++) { // System.out.println(i + "degree:" +
+		 * vList.get(i).connectedVertices.size()); if
+		 * (vList.get(i).connectedVertices.size() < lowestDegree) { lowestDegree =
+		 * vList.get(i).connectedVertices.size(); indexOfLowestDegree = i; } }
+		 */
+		int maxPath = 0;
+		ArrayList<ArrayList<Vertex>> paths = new ArrayList<ArrayList<Vertex>>();
+		for (int k = 0; k < vList.size(); k++) {
+			Vertex startNode = vList.get(k);
+			// System.out.println("Node with the lwoest degree is : " +
+			// vList.get(indexOfLowestDegree).name);
+			// if maraming lowest degree u know what to do
+
+			ArrayList<Vertex> currentPath = new ArrayList<Vertex>();
+			Stack<Vertex> aStack = new Stack<Vertex>();
+			aStack.push(startNode);
+			ArrayList<Boolean> isVisited = new ArrayList<Boolean>();
+			for (int i = 0; i < vList.size(); i++) {
+				isVisited.add(false);
+			}
+			// System.out.println(startNode + "Start");
+			while (!aStack.isEmpty()) {
+				Vertex currNode = aStack.pop();
+				// System.out.println("popped " + currNode.name);
+				if (isVisited.get(Integer.parseInt(currNode.name)) == false) {
+					currentPath.add(currNode);
+					// System.out.print(currNode.name+"->");
+					isVisited.set(Integer.parseInt(currNode.name), true);
+				}
+				// System.out.println("Curr Node " + currNode.name);
+				// boolean hasSibling = false;
+				for (int i = 0; i < currNode.connectedVertices.size(); i++) {
+					if (!isVisited.get(Integer.parseInt(currNode.connectedVertices.get(i).name))) {
+						// System.out.print(currNode.connectedVertices.get(i).name+",");
+						// hasSibling = true;
+						aStack.push(currNode.connectedVertices.get(i));
+						// System.out.println("added " + currNode.name);
+					}
+				}
+				/*
+				 * System.out.println("b4size" + currentPath.size()); if(!hasSibling) {
+				 * currentPath.remove(currentPath.size()-1); }
+				 */
+				System.out.println("size" + currentPath.size());
+				// System.out.println();
+			}
+
+			int toDelete = -1;
+			for (int i = 0; i < currentPath.size() - 1; i++) {
+				System.out.println(currentPath.get(i).name + "-" + currentPath.get(i + 1).name);
+				if (!isEdge(eList, currentPath.get(i), currentPath.get(i + 1))) {
+					toDelete = i;
+				}
+			}
+			currentPath.remove(toDelete);
+			System.out.println("Maximum Matching Edges: ");
+			/*for (int i = 0; i < currentPath.size() - 1; i++) {
+				System.out.println(currentPath.get(i).name + "-" + currentPath.get(i + 1).name);
+
+			}*/
+			
+			paths.add(currentPath);
 		}
+		
+		for(int i=0; i<paths.size(); i++) {
+			System.out.println(paths.get(i).size());
+		}
+
 	}
-	
+
+	public boolean isEdge(Vector<Edge> eList, Vertex x, Vertex y) {
+		for (int i = 0; i < eList.size(); i++) {
+			Edge temp = eList.get(i);
+			if (temp.vertex1.name.equals(x.name) && temp.vertex2.name.equals(y.name)) {
+				return true;
+			}
+			if (temp.vertex2.name.equals(x.name) && temp.vertex1.name.equals(y.name)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void doDFS() {
+
+	}
+
 	public boolean edgeConnectivity() {
 
 		return false;
@@ -100,7 +213,7 @@ public class GraphProperties {
 		return adjacentNodes;
 	}
 
-	public boolean checkConnected() {
+	public boolean isConnected() {
 		for (int j = 0; j < adjacencyMatrix[0].length; j++) {
 			boolean hasOne = false;
 			for (int i = 0; i < adjacencyMatrix.length; i++) {
@@ -123,8 +236,7 @@ public class GraphProperties {
 		boolean isVisited[] = new boolean[noOfVertex];
 		for (int i = 0; i < noOfVertex; i++) {
 
-
-			System.out.println("Node " + i);
+			//System.out.println("Node " + i);
 			if (DFSCycle(isVisited, i, i, i))
 				return true;
 
