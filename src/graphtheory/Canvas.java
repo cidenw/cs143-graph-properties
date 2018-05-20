@@ -54,52 +54,61 @@ public class Canvas {
 
         //events
         menuBar = new JMenuBar();
-        JMenu menuOptions = new JMenu("Tools");
-        JMenu menuOptions1 = new JMenu("File");
+        JMenu menuOptions = new JMenu("File");
+        JMenu menuOptions1 = new JMenu("Tools");
         JMenu menuOptions2 = new JMenu("Extras");
         JMenu menuOptions3 = new JMenu("Window");
 
-        JMenuItem item = new JMenuItem("Add Vertex");
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_DOWN_MASK));
-        item.addActionListener(new MenuListener());
-        menuOptions.add(item);
-        item = new JMenuItem("Open File");
+        //File options
+        JMenuItem item = new JMenuItem("Open File");
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
         item.addActionListener(new MenuListener());
-        menuOptions1.add(item);
+        menuOptions.add(item);
         item = new JMenuItem("Save to File");
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
+        item.addActionListener(new MenuListener());
+        menuOptions.add(item);
+        
+        //File options
+        item = new JMenuItem("Add Vertex");
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_DOWN_MASK));
         item.addActionListener(new MenuListener());
         menuOptions1.add(item);
         item = new JMenuItem("Add Edges");
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK));
         item.addActionListener(new MenuListener());
-        menuOptions.add(item);
+        menuOptions1.add(item);
         item = new JMenuItem("Grab Tool");
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK));
         item.addActionListener(new MenuListener());
-        menuOptions.add(item);
+        menuOptions1.add(item);
         item = new JMenuItem("Remove Tool");
         item.addActionListener(new MenuListener());
         item.setEnabled(false);
-        menuOptions.add(item);
+        menuOptions1.add(item);
+
+        
+        //Extras options
         item = new JMenuItem("Auto Arrange Vertices");
         item.addActionListener(new MenuListener());
-
         menuOptions2.add(item);
         item = new JMenuItem("Remove All");
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK));
         item.addActionListener(new MenuListener());
         menuOptions2.add(item);
-
+        
+        //Window options
         item = new JMenuItem("Graph");
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK));
         item.addActionListener(new MenuListener());
         menuOptions3.add(item);
         item = new JMenuItem("Properties");
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_DOWN_MASK));
         item.addActionListener(new MenuListener());
         menuOptions3.add(item);
 
-        menuBar.add(menuOptions1);
         menuBar.add(menuOptions);
+        menuBar.add(menuOptions1);
         menuBar.add(menuOptions2);
         menuBar.add(menuOptions3);
 
@@ -451,14 +460,17 @@ public class Canvas {
                     canvasImage2.getGraphics().clearRect(0, 0, width, height); //clear
                     gP.drawAdjacencyMatrix(canvasImage2.getGraphics(), vertexList, width / 2 + 50, 50);//draw adjacency matrix
                     gP.drawDistanceMatrix(canvasImage2.getGraphics(), vertexList, width / 2 + 50, height / 2 + 50);//draw distance matrix
-                    g.drawImage(canvasImage2, 0, 0, null); //layer 1
                     drawString("Graph disconnects when nodes in color red are removed.", 100, height - 30, 20);
+                    gP.showGraphProperties(canvasImage2.getGraphics(), 100, height/2 + 100);
+                    g.drawImage(canvasImage2, 0, 0, null); //layer 1
+                    
                     g.drawString("See output console for Diameter of Graph", 100, height / 2 + 50);
+                    
                     g.drawImage(canvasImage.getScaledInstance(width / 2, height / 2, Image.SCALE_SMOOTH), 0, 0, null); //layer 1
                     g.draw3DRect(0, 0, width / 2, height / 2, true);
                     g.setColor(Color.black);
 
-                    break;
+                    break; 
                 }
             }
 
