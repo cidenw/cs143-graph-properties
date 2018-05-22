@@ -19,6 +19,7 @@ public class Canvas {
 
     public JFrame frame;
     private JMenuBar menuBar;
+//    private JButton closenessButton;
     private CanvasPane canvas;
     private Graphics2D graphic;
     private Color backgroundColour;
@@ -104,6 +105,18 @@ public class Canvas {
         menuOptions3.add(item);
         item = new JMenuItem("Properties");
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_DOWN_MASK));
+        item.addActionListener(new MenuListener());
+        menuOptions3.add(item);
+        item = new JMenuItem("Betweenness Centrality");
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_DOWN_MASK));
+        item.addActionListener(new MenuListener());
+        menuOptions3.add(item);
+        item = new JMenuItem("Closeness Centrality");
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK));
+        item.addActionListener(new MenuListener());
+        menuOptions3.add(item);
+        item = new JMenuItem("Degree Centrality");
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK));
         item.addActionListener(new MenuListener());
         menuOptions3.add(item);
 
@@ -350,6 +363,57 @@ public class Canvas {
                     
                 }
                 erase();
+            } else if (command.equals("Betweenness Centrality")) {
+            	gP.showTable("Betweenness", new String[]{"One", "Two", "Three"}, new int[][] {
+																							{11,12,13},		            		
+																							{2,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0},
+																							{3,0,0}
+																							});
+            } else if (command.equals("Closeness Cntrality")) {
+            	//CALL BC FXN
+            } else if (command.equals("Degree Centrality")) {
+            	//CALL BC FXN
             }
 
             refresh();
@@ -457,11 +521,16 @@ public class Canvas {
                     break;
                 }
                 case 1: {   //properties window
+//                	closenessButton = new JButton();
+//                	closenessButton.setSize(500,500);
+//                		
+                	
                     canvasImage2.getGraphics().clearRect(0, 0, width, height); //clear
                     gP.drawAdjacencyMatrix(canvasImage2.getGraphics(), vertexList, width / 2 + 50, 50);//draw adjacency matrix
                     gP.drawDistanceMatrix(canvasImage2.getGraphics(), vertexList, width / 2 + 50, height / 2 + 50);//draw distance matrix
                     drawString("Graph disconnects when nodes in color red are removed.", 100, height - 30, 20);
-                    gP.showGraphProperties(canvasImage2.getGraphics(), 100, height/2 + 100);
+                    
+                    gP.showGraphProperties(canvasImage2.getGraphics(), 100, height/2 + 100);                    
                     g.drawImage(canvasImage2, 0, 0, null); //layer 1
                     
                     g.drawString("See output console for Diameter of Graph", 100, height / 2 + 50);
@@ -469,7 +538,7 @@ public class Canvas {
                     g.drawImage(canvasImage.getScaledInstance(width / 2, height / 2, Image.SCALE_SMOOTH), 0, 0, null); //layer 1
                     g.draw3DRect(0, 0, width / 2, height / 2, true);
                     g.setColor(Color.black);
-
+                    
                     break; 
                 }
             }

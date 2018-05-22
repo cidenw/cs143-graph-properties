@@ -5,11 +5,14 @@
 package graphtheory;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
 
@@ -17,6 +20,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 /**
  *
@@ -418,16 +423,43 @@ public class GraphProperties {
 		g.drawString("Has a Clique: " /* + ADD FXN HERE*/, x, y + 120);
 		g.drawString("Maximum Matching: " /* + ADD FXN HERE*/, x, y + 140);
 		g.drawString("Betweenness: " /* + ADD FXN HERE*/, x, y + 160);
-		g.drawString("Closeness: " /* + ADD FXN HERE*/, x, y + 180);
+		g.drawString("Closeness: ", x, y + 180);
 		g.drawString("Distance: " /* + ADD FXN HERE*/, x, y + 200);
 
-		
 		
 	}
 	
 	
+	public void showTable(String tableType, String[] columnNames, int[][] tableVals) {
+		
+		System.out.println("TEST");
+		JFrame tableFrame = new JFrame();
+		
+		tableFrame.setTitle(tableType);
+		tableFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		tableFrame.setResizable(false);
+		
+		Integer[][] main = new Integer[tableVals.length][columnNames.length];
+		
+		for(int i = 0; i < tableVals.length; i++) {
+			for(int j = 0; j < columnNames.length; j++) {
+				main[i][j] = Integer.valueOf(tableVals[i][j]);
+			}
+		}
+		
+		JTable mainTable = new JTable(main, columnNames);
+		JScrollPane scrollPane = new JScrollPane(mainTable);
+		JPanel tablePanel = new JPanel();
+		
+		tablePanel.setSize(new Dimension(480, 640));
+		tablePanel.add(scrollPane);
+		
 	
-	
+		tableFrame.setContentPane(tablePanel);
+		tableFrame.pack();
+		tableFrame.setSize(new Dimension(480, 500));
+		tableFrame.setVisible(true);
+	}
 
 	public void drawAdjacencyMatrix(Graphics g, Vector<Vertex> vList, int x, int y) {
 		int cSize = 20;
