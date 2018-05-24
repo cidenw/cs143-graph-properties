@@ -71,6 +71,11 @@ public class GraphProperties {
 //			}
 //		}
 		getBetweenessCentrality(vList, eList);
+		ArrayList<Integer[]> minCuts = edgeConnectivity();
+//		System.out.println("MINCUTS");
+//		for(int i=0; i<minCuts.size(); i++) {
+//			System.out.println(minCuts.get(i)[0]+"-"+minCuts.get(i)[1]);
+//		}
 		double[] closenessCentralities = getClosenessCentrality(vList, eList);
 		
 		VertexPair vp = vpList.get(0);
@@ -219,8 +224,23 @@ public class GraphProperties {
 		return null;
 	}
 
-	public boolean edgeConnectivity() {
-		return false;
+	public ArrayList<Integer[]> edgeConnectivity() {
+		MinCut mc = new MinCut();
+		ArrayList<ArrayList<Integer[]>> listOfMinCuts = new ArrayList<ArrayList<Integer[]>>();
+		for(int i=0; i<vpList.size(); i++) {
+			int s = Integer.parseInt(vpList.get(i).vertex1.name);
+			int t = Integer.parseInt(vpList.get(i).vertex2.name);
+			listOfMinCuts.add(mc.minCut(adjacencyMatrix, s, t));
+		}
+		int leastMinCuts = Integer.MAX_VALUE;
+		int indexOfLeastMinCuts = -1;
+		for(int i=0; i<listOfMinCuts.size(); i++) {
+			if(listOfMinCuts.get(i).size()<leastMinCuts) {
+				leastMinCuts = listOfMinCuts.get(i).size();
+				indexOfLeastMinCuts = i;
+			}
+		}
+		return listOfMinCuts.get(indexOfLeastMinCuts);
 	}
 	
 	public ArrayList<Integer> getAdjacentNodes(Vector<Vertex> vList, Vector<Edge> eList, int node) {
