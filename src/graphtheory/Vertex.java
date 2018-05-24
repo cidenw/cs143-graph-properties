@@ -24,6 +24,7 @@ public class Vertex implements Comparable {
     public boolean setBlue;
     public boolean setGreen;
     public boolean setYellow;
+    public boolean setBlack;
     private int size1 = 30;
     private int size2 = 40;
     public Vector<Vertex> connectedVertices;
@@ -84,8 +85,10 @@ public class Vertex implements Comparable {
             g.setColor(Color.blue);        	
         } else if(setYellow) {
             g.setColor(Color.yellow);
-        } else {
+        } else if(setBlack){
             g.setColor(Color.black);
+        } else {
+        	g.setColor(Color.black);
         }
 
         g.fillOval(location.x - size2 / 2, location.y - size2 / 2, size2, size2);

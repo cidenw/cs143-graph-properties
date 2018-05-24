@@ -22,6 +22,7 @@ public class Edge {
     public boolean setBlue;
     public boolean setGreen;
     public boolean setYellow;
+    public boolean setBlack;
 
     public Edge(Vertex v1, Vertex v2) {
         vertex1 = v1;
@@ -43,6 +44,8 @@ public class Edge {
             g.setColor(Color.blue);        	
         } else if(setYellow) {
             g.setColor(Color.yellow);
+        } else if(setBlack){
+            g.setColor(Color.black);
         } else {
             g.setColor(Color.black);
         }

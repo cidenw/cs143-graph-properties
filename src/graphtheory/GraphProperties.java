@@ -10,6 +10,7 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Stack;
 import java.util.Vector;
 
 import javax.swing.JFrame;
@@ -27,6 +28,14 @@ public class GraphProperties {
 	public int[][] distanceMatrix;
 	public Vector<VertexPair> vpList;
 	static int time = 0;
+	double[][] betweenness_centrality;
+	double[][] degree_centrality;
+	double[][] closeness_centrality;
+	ArrayList<Integer[]> edgeConnectivityEdges;
+	Vector<Vertex> vList;
+	Vector<Edge> eList;
+	int cliqueNodes[];
+	ArrayList<Integer[]> maximumMatching;
 
 	public int[][] generateAdjacencyMatrix(Vector<Vertex> vList, Vector<Edge> eList) {
 		adjacencyMatrix = new int[vList.size()][vList.size()];
@@ -42,60 +51,36 @@ public class GraphProperties {
 			adjacencyMatrix[vList.indexOf(eList.get(i).vertex1)][vList.indexOf(eList.get(i).vertex2)] = 1;
 			adjacencyMatrix[vList.indexOf(eList.get(i).vertex2)][vList.indexOf(eList.get(i).vertex1)] = 1;
 		}
+
 		
-//		//Properties variables
-//		boolean isConnected = isConnected();
-//		int noOfComponents = countComponents();
-//		boolean isCycle = checkCycle();
-		
-//		for(int i=0; i<eList.size(); i++) {
-//			System.out.println(eList.get(i).vertex1.name+"-"+eList.get(i).vertex2.name);
-//		}
-		
-		int[] arr = checkClique(vList, eList);
-		int[][] degreeCentralities = getDegreeCentrality(vList, eList);
-//		for(int i=0; i<degreeCentralities.length; i++) {
-//			System.out.println("Node "+ degreeCentralities[i][0]+" - "+ degreeCentralities[i][1]);
-//		}
-//		for(int i=0; i<vList.size(); i++) {
-//			System.out.println(vList.get(i).name);
-//		}
-		generateDistanceMatrix(vList);
-		displayContainers(vList);
-//		for(int i=0; i<distanceMatrix.length; i++) {
-//			for(int j=0; j<distanceMatrix.length; j++) {
-//				System.out.println("i = "+i+" j="+j +"   dis(ij)="+distanceMatrix[i][j]);
-//				System.out.println("paths");
-//				for()
-//				
-//			}
-//		}
-		getBetweenessCentrality(vList, eList);
-		ArrayList<Integer[]> minCuts = edgeConnectivity();
-//		System.out.println("MINCUTS");
-//		for(int i=0; i<minCuts.size(); i++) {
-//			System.out.println(minCuts.get(i)[0]+"-"+minCuts.get(i)[1]);
-//		}
-		double[] closenessCentralities = getClosenessCentrality(vList, eList);
-		
-		VertexPair vp = vpList.get(0);
-		for(int i=0; i<vp.pathList.get(0).size(); i++) {
-			System.out.print(vp.pathList.get(0).get(i).name+"->");
-		}
-		for(int i=0; i<vpList.size(); i++) {
-			System.out.println(vpList.get(i).vertex1.name + "+"+ vpList.get(i).vertex2.name);
-		}
+//		generateDistanceMatrix(vList);
+//		displayContainers(vList);
+//		
+//		getBetweennessCentrality(vList, eList);
+//		ArrayList<Integer[]> minCuts = edgeConnectivity();
+//		// System.out.println("MINCUTS");
+//		// for(int i=0; i<minCuts.size(); i++) {
+//		// System.out.println(minCuts.get(i)[0]+"-"+minCuts.get(i)[1]);
+//		// }
+//		double[] closenessCentralities = getClosenessCentrality(vList, eList);
+//		maximumMatching(vList, eList);
+//		// VertexPair vp = vpList.get(0);
+//		// for (int i = 0; i < vp.pathList.get(0).size(); i++) {
+//		// System.out.print(vp.pathList.get(0).get(i).name + "->");
+//		// }
+//		// for (int i = 0; i < vpList.size(); i++) {
+//		// System.out.println(vpList.get(i).vertex1.name + "+" +
+//		// vpList.get(i).vertex2.name);
+//		// }
 		return adjacencyMatrix;
 	}
-	
+
 	public int[] getBlock() {
 		return null;
 	}
-	
-	
-	
+
 	public void setNodeColor(Vertex aVertex, int color) {
-		switch(color) {
+		switch (color) {
 		case 0:
 			aVertex.setWhite = true;
 			break;
@@ -112,13 +97,13 @@ public class GraphProperties {
 			aVertex.setYellow = true;
 			break;
 		default:
-			
+
 			break;
 		}
 	}
-	
+
 	public void setEdgeColor(Edge anEdge, int color) {
-		switch(color) {
+		switch (color) {
 		case 0:
 			anEdge.setWhite = true;
 			break;
@@ -135,77 +120,198 @@ public class GraphProperties {
 			anEdge.setYellow = true;
 			break;
 		default:
-			
+
 			break;
 		}
 	}
-	
-	
-	
-	public double[] getClosenessCentrality(Vector<Vertex> vList, Vector<Edge> eList){
+
+	// public ArrayList<Integer[]> maximumMatching(){
+	// return null;
+	// }
+
+	public boolean isBlock() {
+
+		return false;
+	}
+
+	public ArrayList<Integer[]> maximumMatching(Vector<Vertex> vList, Vector<Edge> eList) {
+		ArrayList<Integer[]> edges = new ArrayList<Integer[]>();
+		/*
+		 * int lowestDegree = vList.size(); int indexOfLowestDegree = -1; for (int i =
+		 * 0; i < vList.size(); i++) { // System.out.println(i + "degree:" +
+		 * vList.get(i).connectedVertices.size()); if
+		 * (vList.get(i).connectedVertices.size() < lowestDegree) { lowestDegree =
+		 * vList.get(i).connectedVertices.size(); indexOfLowestDegree = i; } }
+		 */
+//		int maxPath = 0;
+		ArrayList<ArrayList<Vertex>> paths = new ArrayList<ArrayList<Vertex>>();
+		for (int k = 0; k < vList.size(); k++) {
+			Vertex startNode = vList.get(k);
+
+			ArrayList<Vertex> currentPath = new ArrayList<Vertex>();
+			Stack<Vertex> aStack = new Stack<Vertex>();
+			aStack.push(startNode);
+			ArrayList<Boolean> isVisited = new ArrayList<Boolean>();
+			for (int i = 0; i < vList.size(); i++) {
+				isVisited.add(false);
+			}
+			// System.out.println(startNode + "Start");
+			while (!aStack.isEmpty()) {
+				Vertex currNode = aStack.pop();
+				// System.out.println("popped " + currNode.name);
+				if (isVisited.get(Integer.parseInt(currNode.name)) == false) {
+					currentPath.add(currNode);
+					// System.out.print(currNode.name+"->");
+					isVisited.set(Integer.parseInt(currNode.name), true);
+				}
+				// System.out.println("Curr Node " + currNode.name);
+				// boolean hasSibling = false;
+				for (int i = 0; i < currNode.connectedVertices.size(); i++) {
+					if (!isVisited.get(Integer.parseInt(currNode.connectedVertices.get(i).name))) {
+						// System.out.print(currNode.connectedVertices.get(i).name+",");
+						// hasSibling = true;
+						aStack.push(currNode.connectedVertices.get(i));
+						// System.out.println("added " + currNode.name);
+					}
+				}
+				/*
+				 * System.out.println("b4size" + currentPath.size()); if(!hasSibling) {
+				 * currentPath.remove(currentPath.size()-1); }
+				 */
+				System.out.println("size" + currentPath.size());
+				// System.out.println();
+			}
+
+			int toDelete = -1;
+			for (int i = 0; i < currentPath.size() - 1; i++) {
+				System.out.println(currentPath.get(i).name + "-" + currentPath.get(i + 1).name);
+				if (!isEdge(eList, currentPath.get(i), currentPath.get(i + 1))) {
+					toDelete = i;
+				}
+			}
+			if (toDelete != -1) {
+				currentPath.remove(toDelete);
+			}
+
+			System.out.println("Maximum Matching Edges: ");
+			/*
+			 * for (int i = 0; i < currentPath.size() - 1; i++) {
+			 * System.out.println(currentPath.get(i).name + "-" + currentPath.get(i +
+			 * 1).name);
+			 * 
+			 * }
+			 */
+
+			paths.add(currentPath);
+		}
+
+		int longestPath = Integer.MIN_VALUE;
+		int indexOfLongestPath = -1;
+		for (int i = 0; i < paths.size(); i++) {
+			if (paths.get(i).size() > longestPath) {
+				longestPath = paths.get(i).size();
+				indexOfLongestPath = i;
+			}
+			System.out.println("Path" + paths.get(i).size());
+			for (int j = 0; j < paths.get(indexOfLongestPath).size(); j++) {
+				System.out.print(paths.get(indexOfLongestPath).get(j).name + "->");
+			}
+		}
+		System.out.println(indexOfLongestPath + "INDEX LONGEST PATH");
+		// System.out.println("EDGES");
+		if(indexOfLongestPath == -1) {
+			return edges;
+		}
+		for (int i = 0; i < paths.get(indexOfLongestPath).size() - 1; i += 2) {
+			Integer[] edge = new Integer[2];
+			edge[0] = Integer.parseInt(paths.get(indexOfLongestPath).get(i).name);
+			edge[1] = Integer.parseInt(paths.get(indexOfLongestPath).get(i + 1).name);
+			edges.add(edge);
+			System.out.println("Edge = " + edge[0] + "-" + edge[1]);
+		}
+		return edges;
+
+	}
+
+	public boolean isEdge(Vector<Edge> eList, Vertex x, Vertex y) {
+		for (int i = 0; i < eList.size(); i++) {
+			Edge temp = eList.get(i);
+			if (temp.vertex1.name.equals(x.name) && temp.vertex2.name.equals(y.name)) {
+				return true;
+			}
+			if (temp.vertex2.name.equals(x.name) && temp.vertex1.name.equals(y.name)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public double[] getClosenessCentrality(Vector<Vertex> vList, Vector<Edge> eList) {
 		double[] closenessCentralities = new double[vList.size()];
-		for(int i=0; i<vList.size(); i++) {
+		for (int i = 0; i < vList.size(); i++) {
 			int sumOfShortestPaths = 0;
 			double closenessCentrality = 0.0;
-			for(int j=0; j<vList.size(); j++) {
-				sumOfShortestPaths+=distanceMatrix[Integer.parseInt(vList.get(i).name)][j];
+			for (int j = 0; j < vList.size(); j++) {
+				sumOfShortestPaths += distanceMatrix[Integer.parseInt(vList.get(i).name)][j];
 			}
-			closenessCentrality = (double)(vList.size()-1)/(double)sumOfShortestPaths;
-			
+			closenessCentrality = (double) (vList.size() - 1) / (double) sumOfShortestPaths;
+
 			closenessCentralities[i] = closenessCentrality;
 		}
 		return closenessCentralities;
 	}
-	
-	public double[] getBetweenessCentrality(Vector<Vertex> vList, Vector<Edge> eList){
+
+	public double[] getBetweennessCentrality(Vector<Vertex> vList, Vector<Edge> eList) {
 		double betweennessCentrality[] = new double[vList.size()];
-		for(int i=0; i<vList.size(); i++) {
+		for (int i = 0; i < vList.size(); i++) {
 			Vertex currNode = vList.get(i);
-//			System.out.println();
-//			System.out.println("Current node" + currNode.name);
+			// System.out.println();
+			// System.out.println("Current node" + currNode.name);
 			double betweenness = 0.0;
-			for(int j=0; j<vpList.size(); j++) {
-				if(vpList.get(j).vertex1.name.equals(currNode.name) || vpList.get(j).vertex2.name.equals(currNode.name)) {
+			for (int j = 0; j < vpList.size(); j++) {
+				if (vpList.get(j).vertex1.name.equals(currNode.name)
+						|| vpList.get(j).vertex2.name.equals(currNode.name)) {
 					continue;
 				}
-				double numOfShortestPaths = vpList.get(j).getNumberOfShortestPathPassingNode(currNode, distanceMatrix[Integer.parseInt(vpList.get(j).vertex1.name)][Integer.parseInt(vpList.get(j).vertex2.name)]);
-//				System.out.println("VertexPair = "+vpList.get(j).vertex1.name+"-"+vpList.get(j).vertex2.name);
-//				System.out.print(numOfShortestPaths);
-				betweenness+=numOfShortestPaths;
-				
-//				System.out.println();
+				double numOfShortestPaths = vpList.get(j).getNumberOfShortestPathPassingNode(currNode,
+						distanceMatrix[Integer.parseInt(vpList.get(j).vertex1.name)][Integer
+								.parseInt(vpList.get(j).vertex2.name)]);
+				// System.out.println("VertexPair =
+				// "+vpList.get(j).vertex1.name+"-"+vpList.get(j).vertex2.name);
+				// System.out.print(numOfShortestPaths);
+				betweenness += numOfShortestPaths;
+
+				// System.out.println();
 			}
-//			System.out.println("Betweenness="+betweenness);
-//			System.out.println("\n");
+			// System.out.println("Betweenness="+betweenness);
+			// System.out.println("\n");
 			betweennessCentrality[i] = betweenness;
 		}
 		return betweennessCentrality;
 	}
-	
-	
 
-	public int[][] getDegreeCentrality(Vector<Vertex> vList, Vector<Edge> eList){
-		int[][] degreeCentralities = new int[vList.size()][2];
-		
-		for(int i=0; i<vList.size(); i++) {
+	public double[] getDegreeCentrality(Vector<Vertex> vList, Vector<Edge> eList) {
+		double[] degreeCentralities = new double[vList.size()];
+
+		for (int i = 0; i < vList.size(); i++) {
 			ArrayList<Integer> adjacentNodes = getAdjacentNodes(vList, eList, Integer.parseInt(vList.get(i).name));
-			degreeCentralities[i][0] = Integer.parseInt(vList.get(i).name);
-			degreeCentralities[i][1] = adjacentNodes.size();
+			degreeCentralities[i] = adjacentNodes.size();
 		}
+
 		return degreeCentralities;
 	}
-	
-	public int[] checkClique(Vector<Vertex> vList, Vector<Edge> eList){
+
+	public int[] checkClique(Vector<Vertex> vList, Vector<Edge> eList) {
 		// finds k3 in graph
 		int[] clique = new int[3];
-		for(int i=0; i<vList.size(); i++) {
+		for (int i = 0; i < vList.size(); i++) {
 			int node1 = Integer.parseInt(vList.get(i).name);
-			for(int j=0; j<vList.size(); j++) {
+			for (int j = 0; j < vList.size(); j++) {
 				int node2 = Integer.parseInt(vList.get(j).name);
-				for(int k=0; k<vList.size(); k++) {
+				for (int k = 0; k < vList.size(); k++) {
 					int node3 = Integer.parseInt(vList.get(k).name);
-					if(node1 != node2 && node2!=node3) {
-						if(isEdge(eList, node1, node2) && isEdge(eList, node2, node3) && isEdge(eList, node3, node1)) {
+					if (node1 != node2 && node2 != node3) {
+						if (isEdge(eList, node1, node2) && isEdge(eList, node2, node3) && isEdge(eList, node3, node1)) {
 							clique[0] = node1;
 							clique[1] = node2;
 							clique[2] = node3;
@@ -215,39 +321,41 @@ public class GraphProperties {
 				}
 			}
 		}
-		
-		return null;
-	}
-	
-	
-	public ArrayList<ArrayList<Integer>> maximumMatching(Vector<Vertex> vList, Vector<Edge> eList) {
+
 		return null;
 	}
 
+	// public ArrayList<ArrayList<Integer>> maximumMatching(Vector<Vertex> vList,
+	// Vector<Edge> eList) {
+	// return null;
+	// }
+
 	public ArrayList<Integer[]> edgeConnectivity() {
-		MinCut mc = new MinCut();
 		ArrayList<ArrayList<Integer[]>> listOfMinCuts = new ArrayList<ArrayList<Integer[]>>();
-		for(int i=0; i<vpList.size(); i++) {
+		for (int i = 0; i < vpList.size(); i++) {
 			int s = Integer.parseInt(vpList.get(i).vertex1.name);
 			int t = Integer.parseInt(vpList.get(i).vertex2.name);
-			listOfMinCuts.add(mc.minCut(adjacencyMatrix, s, t));
+			listOfMinCuts.add(MinCut.minCut(adjacencyMatrix, s, t));
 		}
 		int leastMinCuts = Integer.MAX_VALUE;
 		int indexOfLeastMinCuts = -1;
-		for(int i=0; i<listOfMinCuts.size(); i++) {
-			if(listOfMinCuts.get(i).size()<leastMinCuts) {
+		for (int i = 0; i < listOfMinCuts.size(); i++) {
+			if (listOfMinCuts.get(i).size() < leastMinCuts) {
 				leastMinCuts = listOfMinCuts.get(i).size();
 				indexOfLeastMinCuts = i;
 			}
 		}
+		if(indexOfLeastMinCuts==-1) {
+			return new ArrayList<Integer[]>();
+		}
 		return listOfMinCuts.get(indexOfLeastMinCuts);
 	}
-	
+
 	public ArrayList<Integer> getAdjacentNodes(Vector<Vertex> vList, Vector<Edge> eList, int node) {
 		ArrayList<Integer> adjacentNodes = new ArrayList<Integer>();
-		for(int i=0; i<vList.size(); i++) {
-			if(i!=node) {
-				if(isEdge(eList, node, Integer.parseInt(vList.get(i).name))) {
+		for (int i = 0; i < vList.size(); i++) {
+			if (i != node) {
+				if (isEdge(eList, node, Integer.parseInt(vList.get(i).name))) {
 					adjacentNodes.add(Integer.parseInt(vList.get(i).name));
 				}
 			}
@@ -267,10 +375,10 @@ public class GraphProperties {
 		}
 		return false;
 	}
-	
+
 	public int countComponents() {
 		int count = 0;
-		int index = 0;
+		//int index = 0;
 		int noOfVertex = adjacencyMatrix.length;
 		boolean isVisited[] = new boolean[noOfVertex];
 		// System.out.println("Components:");
@@ -330,8 +438,7 @@ public class GraphProperties {
 		int noOfVertex = adjacencyMatrix.length;
 		boolean isVisited[] = new boolean[noOfVertex];
 		for (int i = 0; i < noOfVertex; i++) {
-
-			//System.out.println("Node " + i);
+			// System.out.println("Node " + i);
 			if (DFSCycle(isVisited, i, i, i))
 				return true;
 
@@ -351,10 +458,14 @@ public class GraphProperties {
 		for (int i = 0; i < adjacentNodes.size(); i++) {
 			if (!isVisited[adjacentNodes.get(i)]) {
 				return DFSCycle(isVisited, adjacentNodes.get(i), start, vertex);
-			} else if (start == adjacentNodes.get(i) && parent != start) {
-				System.out.println(parent + "-" + adjacentNodes.get(i));
-				return true;
-			}
+//			} else {
+//				System.out.println(adjacentNodes.get(index));
+//				return true;
+//			}
+			 } else if (start == adjacentNodes.get(i) && parent != start) {
+			 System.out.println(parent + "-" + adjacentNodes.get(i));
+			 return true;
+			 }
 		}
 		return false;
 	}
@@ -497,54 +608,170 @@ public class GraphProperties {
 		}
 
 	}
-	
-	
-	
-	public void showGraphProperties(Graphics g, int x, int y) {
-		g.drawString("Graph Properties", x, y-10);
-		g.setColor(Color.LIGHT_GRAY);
-		g.fillRect(x-10, y, 250, 220);
-		g.setColor(Color.black);
-		g.drawString("Connected: " /* + ADD FXN HERE*/, x, y + 20);
-		g.drawString("Number of Components: " /* + ADD FXN HERE*/, x, y + 40);
-		g.drawString("Cycle: " /* + ADD FXN HERE*/, x, y + 60);
-		g.drawString("Node Connectivity: " /* + ADD FXN HERE*/, x, y + 80);
-		g.drawString("Edge Connectivity: " /* + ADD FXN HERE*/, x, y + 100);
-		g.drawString("Has a Clique: " /* + ADD FXN HERE*/, x, y + 120);
-		g.drawString("Maximum Matching: " /* + ADD FXN HERE*/, x, y + 140);
-		g.drawString("Betweenness: " /* + ADD FXN HERE*/, x, y + 160);
-		g.drawString("Closeness: ", x, y + 180);
-		g.drawString("Distance: " /* + ADD FXN HERE*/, x, y + 200);
 
-		
+	public void showCutEdges() {
+		resetColors();
+		for (int i = 0; i < this.edgeConnectivityEdges.size(); i++) {
+			getVertex(edgeConnectivityEdges.get(i)[0]).setBlue = true;
+			getVertex(edgeConnectivityEdges.get(i)[1]).setBlue = true;
+			getEdge(edgeConnectivityEdges.get(i)[0], edgeConnectivityEdges.get(i)[1]).setBlue = true;
+		}
 	}
-	
-	
-	public void showTable(String tableType, String[] columnNames, int[][] tableVals) {
-		
+
+	public void showClique() {
+		resetColors();
+		if (cliqueNodes == null) {
+			return;
+		}
+		getEdge(cliqueNodes[0], cliqueNodes[1]).setGreen = true;
+		getEdge(cliqueNodes[1], cliqueNodes[2]).setGreen = true;
+		getEdge(cliqueNodes[2], cliqueNodes[0]).setGreen = true;
+		for (int i = 0; i < this.cliqueNodes.length; i++) {
+			getVertex(cliqueNodes[i]).setGreen = true;
+		}
+	}
+
+	public void showMatching() {
+		resetColors();
+		for (int i = 0; i < this.maximumMatching.size(); i++) {
+			getVertex(maximumMatching.get(i)[0].intValue()).setRed = true;
+			getVertex(maximumMatching.get(i)[1].intValue()).setRed = true;
+			getEdge(maximumMatching.get(i)[0].intValue(), (maximumMatching.get(i)[1].intValue())).setRed = true;
+
+		}
+	}
+
+	public void resetColors() {
+		for (int i = 0; i < vList.size(); i++) {
+			vList.get(i).setBlack = true;
+			vList.get(i).setBlue = false;
+			vList.get(i).setGreen = false;
+			vList.get(i).setRed = false;
+			vList.get(i).setWhite = false;
+			vList.get(i).setYellow = false;
+			vList.get(i).wasFocused = false;
+		}
+		for (int i = 0; i < eList.size(); i++) {
+			eList.get(i).setBlack = true;
+			eList.get(i).setBlue = false;
+			eList.get(i).setGreen = false;
+			eList.get(i).setRed = false;
+			eList.get(i).setWhite = false;
+			eList.get(i).setYellow = false;
+			eList.get(i).wasFocused = false;
+		}
+	}
+
+	private Edge getEdge(int vertex1, int vertex2) {
+		for (int i = 0; i < eList.size(); i++) {
+			System.out.println("VERTEX " + vertex1 + " & " + vertex2);
+			System.out.println(eList.get(i).vertex1.name + " AND " + eList.get(i).vertex2.name);
+			if (Integer.parseInt(eList.get(i).vertex1.name) == vertex1
+					&& Integer.parseInt(eList.get(i).vertex2.name) == vertex2) {
+				return eList.get(i);
+			}
+			if (Integer.parseInt(eList.get(i).vertex1.name) == vertex2
+					&& Integer.parseInt(eList.get(i).vertex2.name) == vertex1) {
+				return eList.get(i);
+			}
+		}
+		return null;
+	}
+
+	public void showGraphProperties(Graphics g, int x, int y, Vector<Vertex> vList, Vector<Edge> eList) {
+		this.vList = vList;
+		this.eList = eList;
+		boolean isConnected = isConnected();
+		int numOfComponents = countComponents();
+		boolean hasCycle = checkCycle();
+		ArrayList<Integer[]> edgeConnectivityEdges = edgeConnectivity();
+		this.edgeConnectivityEdges = edgeConnectivityEdges;
+		int edgeConnectivity = edgeConnectivityEdges.size();
+		int[] cliqueNodes = checkClique(vList, eList);
+		this.cliqueNodes = cliqueNodes;
+		boolean hasClique = true;
+		if (cliqueNodes == null) {
+			hasClique = false;
+		}
+		ArrayList<Integer[]> maximumMatching = maximumMatching(vList, eList);
+		this.maximumMatching = maximumMatching;
+		int numOfPairings = maximumMatching.size();
+		g.drawString("Graph Properties", x, y - 10);
+		g.setColor(Color.LIGHT_GRAY);
+		g.fillRect(x - 10, y, 250, 220);
+		g.setColor(Color.black);
+		g.drawString("Connected: " + isConnected, x, y + 20);
+		g.drawString("Number of Components: " + numOfComponents, x, y + 40);
+		g.drawString("Cycle: " + hasCycle, x, y + 60);
+		// g.drawString("Node Connectivity: " /* + ADD FXN HERE */, x, y + 80);
+		g.drawString("Edge Connectivity: " + edgeConnectivity, x, y + 100);
+		g.drawString("Has a Clique: " + hasClique, x, y + 120);
+		g.drawString("Maximum Matching: " + numOfPairings, x, y + 140);
+		double[] betweenness_centrality;
+		double[] degree_centrality;
+		double[] closeness_centrality;
+		degree_centrality = getDegreeCentrality(vList, eList);
+		betweenness_centrality = getBetweennessCentrality(vList, eList);
+		closeness_centrality = getClosenessCentrality(vList, eList);
+		double[][] bc_formatted = new double[vList.size()][2];
+		double[][] dc_formatted = new double[vList.size()][2];
+		double[][] cc_formatted = new double[vList.size()][2];
+		for (int i = 0; i < vList.size(); i++) {
+			bc_formatted[i][0] = i;
+			bc_formatted[i][1] = betweenness_centrality[i];
+			dc_formatted[i][0] = i;
+			dc_formatted[i][1] = degree_centrality[i];
+			cc_formatted[i][0] = i;
+			cc_formatted[i][1] = closeness_centrality[i];
+		}
+		this.degree_centrality = dc_formatted;
+		this.betweenness_centrality = bc_formatted;
+		this.closeness_centrality = cc_formatted;
+
+		// g.drawString("Betweenness: " /* + ADD FXN HERE */, x, y + 160);
+		// g.drawString("Closeness: ", x, y + 180);
+		// g.drawString("Distance: " /* + ADD FXN HERE */, x, y + 200);
+
+	}
+
+	private Vertex getVertex(int name) {
+		for (int i = 0; i < vList.size(); i++) {
+			if (vList.get(i).name.equals(name + "")) {
+				return vList.get(i);
+			}
+		}
+		return null;
+	}
+
+	public void showTable(String tableType, String[] columnNames, double[][] tableVals) {
+
 		System.out.println("TEST");
 		JFrame tableFrame = new JFrame();
-		
+
 		tableFrame.setTitle(tableType);
 		tableFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		tableFrame.setResizable(false);
-		
-		Integer[][] main = new Integer[tableVals.length][columnNames.length];
-		
-		for(int i = 0; i < tableVals.length; i++) {
-			for(int j = 0; j < columnNames.length; j++) {
-				main[i][j] = Integer.valueOf(tableVals[i][j]);
+
+		String[][] main = new String[tableVals.length][columnNames.length];
+
+		for (int i = 0; i < tableVals.length; i++) {
+			for (int j = 0; j < columnNames.length; j++) {
+				if (j == 0) {
+					main[i][j] = (int) tableVals[i][j] + "";
+				} else {
+					main[i][j] = tableVals[i][j] + "";
+				}
+
 			}
 		}
-		
+
 		JTable mainTable = new JTable(main, columnNames);
 		JScrollPane scrollPane = new JScrollPane(mainTable);
 		JPanel tablePanel = new JPanel();
-		
+
 		tablePanel.setSize(new Dimension(480, 640));
 		tablePanel.add(scrollPane);
-		
-	
+
 		tableFrame.setContentPane(tablePanel);
 		tableFrame.pack();
 		tableFrame.setSize(new Dimension(480, 500));

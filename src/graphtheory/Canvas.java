@@ -119,6 +119,18 @@ public class Canvas {
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK));
         item.addActionListener(new MenuListener());
         menuOptions3.add(item);
+        item = new JMenuItem("Show Cut Edges");
+        //item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK));
+        item.addActionListener(new MenuListener());
+        menuOptions3.add(item);
+        item = new JMenuItem("Show Maximum Matching");
+        //item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK));
+        item.addActionListener(new MenuListener());
+        menuOptions3.add(item);
+        item = new JMenuItem("Show Clique");
+        //item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK));
+        item.addActionListener(new MenuListener());
+        menuOptions3.add(item);
 
         menuBar.add(menuOptions);
         menuBar.add(menuOptions1);
@@ -255,6 +267,7 @@ public class Canvas {
             }
             erase();
             refresh();
+      
         }
 
         @Override
@@ -347,11 +360,11 @@ public class Canvas {
                     //adjacency list
                     int[][] matrix = gP.generateAdjacencyMatrix(vertexList, edgeList);
 
-                    //connectivity
-                    Vector<Vertex> tempList = gP.vertexConnectivity(vertexList);
-                    for (Vertex v : tempList) {
-                        vertexList.get(vertexList.indexOf(v)).wasClicked = true;
-                    }
+//                    //connectivity
+//                    Vector<Vertex> tempList = gP.vertexConnectivity(vertexList);
+//                    for (Vertex v : tempList) {
+//                        vertexList.get(vertexList.indexOf(v)).wasClicked = true;
+//                    }
                     reloadVertexConnections(matrix, vertexList);
 
                     //distance
@@ -364,58 +377,19 @@ public class Canvas {
                 }
                 erase();
             } else if (command.equals("Betweenness Centrality")) {
-            	gP.showTable("Betweenness", new String[]{"One", "Two", "Three"}, new int[][] {
-																							{11,12,13},		            		
-																							{2,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0},
-																							{3,0,0}
-																							});
-            } else if (command.equals("Closeness Cntrality")) {
-            	//CALL BC FXN
+            	gP.showTable("Betweenness Centrality", new String[]{"Node", "Betwenness Centrality"}, gP.betweenness_centrality);
+            } else if (command.equals("Closeness Centrality")) {
+            	gP.showTable("Closeness Centrality", new String[]{"Node", "Closeness Centrality"}, gP.closeness_centrality);
             } else if (command.equals("Degree Centrality")) {
-            	//CALL BC FXN
-            }
-
+            	gP.showTable("Degree Centrality", new String[]{"Node", "Degree Centrality"}, gP.degree_centrality);
+            } else if (command.equals("Show Cut Edges")) {
+            	gP.showCutEdges();
+            } else if (command.equals("Show Maximum Matching")) {
+            	gP.showMatching();
+            } else if (command.equals("Show Clique")) {
+            	gP.showClique();
+            } 
+            
             refresh();
         }
     }
@@ -529,8 +503,8 @@ public class Canvas {
                     gP.drawAdjacencyMatrix(canvasImage2.getGraphics(), vertexList, width / 2 + 50, 50);//draw adjacency matrix
                     gP.drawDistanceMatrix(canvasImage2.getGraphics(), vertexList, width / 2 + 50, height / 2 + 50);//draw distance matrix
                     drawString("Graph disconnects when nodes in color red are removed.", 100, height - 30, 20);
-                    
-                    gP.showGraphProperties(canvasImage2.getGraphics(), 100, height/2 + 100);                    
+            
+                    gP.showGraphProperties(canvasImage2.getGraphics(), 100, height/2 + 100, vertexList, edgeList);                    
                     g.drawImage(canvasImage2, 0, 0, null); //layer 1
                     
                     g.drawString("See output console for Diameter of Graph", 100, height / 2 + 50);
