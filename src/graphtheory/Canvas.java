@@ -346,20 +346,25 @@ public class Canvas {
                 if (vertexList.size() > 0) {
                     //adjacency list
                     int[][] matrix = gP.generateAdjacencyMatrix(vertexList, edgeList);
-
+                    
+                    
+                    
+                    
+                    
                     //connectivity
                     Vector<Vertex> tempList = gP.vertexConnectivity(vertexList);
                     for (Vertex v : tempList) {
                         vertexList.get(vertexList.indexOf(v)).wasClicked = true;
                     }
                     reloadVertexConnections(matrix, vertexList);
-
+                    
                     //distance
                     gP.generateDistanceMatrix(vertexList);
 
                     //VD paths
                     gP.displayContainers(vertexList);
                 //gP.drawNWideDiameter();
+                    
                     
                 }
                 erase();

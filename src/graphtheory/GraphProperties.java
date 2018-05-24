@@ -6,19 +6,13 @@ package graphtheory;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
-import java.util.Stack;
 import java.util.Vector;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -53,110 +47,157 @@ public class GraphProperties {
 //		boolean isConnected = isConnected();
 //		int noOfComponents = countComponents();
 //		boolean isCycle = checkCycle();
-		/*
-		 * System.out.println("Cycle: " + checkCycle());
-		 * System.out.println("Is connected: " + checkConnected());
-		 * System.out.println("No. of components: " + countComponents()); findBridge();
-		 */
-		//maximumMatching(vList, eList);
+		
+//		for(int i=0; i<eList.size(); i++) {
+//			System.out.println(eList.get(i).vertex1.name+"-"+eList.get(i).vertex2.name);
+//		}
+		
+		int[] arr = checkClique(vList, eList);
+		int[][] degreeCentralities = getDegreeCentrality(vList, eList);
+//		for(int i=0; i<degreeCentralities.length; i++) {
+//			System.out.println("Node "+ degreeCentralities[i][0]+" - "+ degreeCentralities[i][1]);
+//		}
+//		for(int i=0; i<vList.size(); i++) {
+//			System.out.println(vList.get(i).name);
+//		}
+		generateDistanceMatrix(vList);
+		displayContainers(vList);
+//		for(int i=0; i<distanceMatrix.length; i++) {
+//			for(int j=0; j<distanceMatrix.length; j++) {
+//				System.out.println("i = "+i+" j="+j +"   dis(ij)="+distanceMatrix[i][j]);
+//				System.out.println("paths");
+//				for()
+//				
+//			}
+//		}
+		getBetweenessCentrality(vList, eList);
+		double[] closenessCentralities = getClosenessCentrality(vList, eList);
+		
+		VertexPair vp = vpList.get(0);
+		for(int i=0; i<vp.pathList.get(0).size(); i++) {
+			System.out.print(vp.pathList.get(0).get(i).name+"->");
+		}
+		for(int i=0; i<vpList.size(); i++) {
+			System.out.println(vpList.get(i).vertex1.name + "+"+ vpList.get(i).vertex2.name);
+		}
 		return adjacencyMatrix;
 	}
-
-	public void maximumMatching(Vector<Vertex> vList, Vector<Edge> eList) {
-		/*
-		 * int lowestDegree = vList.size(); int indexOfLowestDegree = -1; for (int i =
-		 * 0; i < vList.size(); i++) { // System.out.println(i + "degree:" +
-		 * vList.get(i).connectedVertices.size()); if
-		 * (vList.get(i).connectedVertices.size() < lowestDegree) { lowestDegree =
-		 * vList.get(i).connectedVertices.size(); indexOfLowestDegree = i; } }
-		 */
-		int maxPath = 0;
-		ArrayList<ArrayList<Vertex>> paths = new ArrayList<ArrayList<Vertex>>();
-		for (int k = 0; k < vList.size(); k++) {
-			Vertex startNode = vList.get(k);
-			// System.out.println("Node with the lwoest degree is : " +
-			// vList.get(indexOfLowestDegree).name);
-			// if maraming lowest degree u know what to do
-
-			ArrayList<Vertex> currentPath = new ArrayList<Vertex>();
-			Stack<Vertex> aStack = new Stack<Vertex>();
-			aStack.push(startNode);
-			ArrayList<Boolean> isVisited = new ArrayList<Boolean>();
-			for (int i = 0; i < vList.size(); i++) {
-				isVisited.add(false);
+	
+	public int[] getBlock() {
+		return null;
+	}
+	
+	public double[] getClosenessCentrality(Vector<Vertex> vList, Vector<Edge> eList){
+		double[] closenessCentralities = new double[vList.size()];
+		for(int i=0; i<vList.size(); i++) {
+			int sumOfShortestPaths = 0;
+			double closenessCentrality = 0.0;
+			for(int j=0; j<vList.size(); j++) {
+				sumOfShortestPaths+=distanceMatrix[Integer.parseInt(vList.get(i).name)][j];
 			}
-			// System.out.println(startNode + "Start");
-			while (!aStack.isEmpty()) {
-				Vertex currNode = aStack.pop();
-				// System.out.println("popped " + currNode.name);
-				if (isVisited.get(Integer.parseInt(currNode.name)) == false) {
-					currentPath.add(currNode);
-					// System.out.print(currNode.name+"->");
-					isVisited.set(Integer.parseInt(currNode.name), true);
+			closenessCentrality = (double)(vList.size()-1)/(double)sumOfShortestPaths;
+			
+			closenessCentralities[i] = closenessCentrality;
+		}
+		return closenessCentralities;
+	}
+	
+	public double[] getBetweenessCentrality(Vector<Vertex> vList, Vector<Edge> eList){
+		double betweennessCentrality[] = new double[vList.size()];
+		for(int i=0; i<vList.size(); i++) {
+			Vertex currNode = vList.get(i);
+//			System.out.println();
+//			System.out.println("Current node" + currNode.name);
+			double betweenness = 0.0;
+			for(int j=0; j<vpList.size(); j++) {
+				if(vpList.get(j).vertex1.name.equals(currNode.name) || vpList.get(j).vertex2.name.equals(currNode.name)) {
+					continue;
 				}
-				// System.out.println("Curr Node " + currNode.name);
-				// boolean hasSibling = false;
-				for (int i = 0; i < currNode.connectedVertices.size(); i++) {
-					if (!isVisited.get(Integer.parseInt(currNode.connectedVertices.get(i).name))) {
-						// System.out.print(currNode.connectedVertices.get(i).name+",");
-						// hasSibling = true;
-						aStack.push(currNode.connectedVertices.get(i));
-						// System.out.println("added " + currNode.name);
+				double numOfShortestPaths = vpList.get(j).getNumberOfShortestPathPassingNode(currNode, distanceMatrix[Integer.parseInt(vpList.get(j).vertex1.name)][Integer.parseInt(vpList.get(j).vertex2.name)]);
+//				System.out.println("VertexPair = "+vpList.get(j).vertex1.name+"-"+vpList.get(j).vertex2.name);
+//				System.out.print(numOfShortestPaths);
+				betweenness+=numOfShortestPaths;
+				
+//				System.out.println();
+			}
+//			System.out.println("Betweenness="+betweenness);
+//			System.out.println("\n");
+			betweennessCentrality[i] = betweenness;
+		}
+		return betweennessCentrality;
+	}
+	
+	
+	
+	public int[][] getDegreeCentrality(Vector<Vertex> vList, Vector<Edge> eList){
+		int[][] degreeCentralities = new int[vList.size()][2];
+		
+		for(int i=0; i<vList.size(); i++) {
+			ArrayList<Integer> adjacentNodes = getAdjacentNodes(vList, eList, Integer.parseInt(vList.get(i).name));
+			degreeCentralities[i][0] = Integer.parseInt(vList.get(i).name);
+			degreeCentralities[i][1] = adjacentNodes.size();
+		}
+		return degreeCentralities;
+	}
+	
+	public int[] checkClique(Vector<Vertex> vList, Vector<Edge> eList){
+		// finds k3 in graph
+		int[] clique = new int[3];
+		for(int i=0; i<vList.size(); i++) {
+			int node1 = Integer.parseInt(vList.get(i).name);
+			for(int j=0; j<vList.size(); j++) {
+				int node2 = Integer.parseInt(vList.get(j).name);
+				for(int k=0; k<vList.size(); k++) {
+					int node3 = Integer.parseInt(vList.get(k).name);
+					if(node1 != node2 && node2!=node3) {
+						if(isEdge(eList, node1, node2) && isEdge(eList, node2, node3) && isEdge(eList, node3, node1)) {
+							clique[0] = node1;
+							clique[1] = node2;
+							clique[2] = node3;
+							return clique;
+						}
 					}
 				}
-				/*
-				 * System.out.println("b4size" + currentPath.size()); if(!hasSibling) {
-				 * currentPath.remove(currentPath.size()-1); }
-				 */
-				System.out.println("size" + currentPath.size());
-				// System.out.println();
 			}
-
-			int toDelete = -1;
-			for (int i = 0; i < currentPath.size() - 1; i++) {
-				System.out.println(currentPath.get(i).name + "-" + currentPath.get(i + 1).name);
-				if (!isEdge(eList, currentPath.get(i), currentPath.get(i + 1))) {
-					toDelete = i;
-				}
-			}
-			currentPath.remove(toDelete);
-			System.out.println("Maximum Matching Edges: ");
-			/*for (int i = 0; i < currentPath.size() - 1; i++) {
-				System.out.println(currentPath.get(i).name + "-" + currentPath.get(i + 1).name);
-
-			}*/
-			
-			paths.add(currentPath);
 		}
 		
-		for(int i=0; i<paths.size(); i++) {
-			System.out.println(paths.get(i).size());
-		}
-
+		return null;
 	}
-
-	public boolean isEdge(Vector<Edge> eList, Vertex x, Vertex y) {
-		for (int i = 0; i < eList.size(); i++) {
-			Edge temp = eList.get(i);
-			if (temp.vertex1.name.equals(x.name) && temp.vertex2.name.equals(y.name)) {
-				return true;
-			}
-			if (temp.vertex2.name.equals(x.name) && temp.vertex1.name.equals(y.name)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public void doDFS() {
-
+	
+	
+	public ArrayList<ArrayList<Integer>> maximumMatching(Vector<Vertex> vList, Vector<Edge> eList) {
+		return null;
 	}
 
 	public boolean edgeConnectivity() {
-
 		return false;
 	}
+	
+	public ArrayList<Integer> getAdjacentNodes(Vector<Vertex> vList, Vector<Edge> eList, int node) {
+		ArrayList<Integer> adjacentNodes = new ArrayList<Integer>();
+		for(int i=0; i<vList.size(); i++) {
+			if(i!=node) {
+				if(isEdge(eList, node, Integer.parseInt(vList.get(i).name))) {
+					adjacentNodes.add(Integer.parseInt(vList.get(i).name));
+				}
+			}
+		}
+		return adjacentNodes;
+	}
 
+	public boolean isEdge(Vector<Edge> eList, int x, int y) {
+		for (int i = 0; i < eList.size(); i++) {
+			Edge temp = eList.get(i);
+			if (Integer.parseInt(temp.vertex1.name) == x && Integer.parseInt(temp.vertex2.name) == y) {
+				return true;
+			}
+			if (Integer.parseInt(temp.vertex1.name) == y && Integer.parseInt(temp.vertex2.name) == x) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public int countComponents() {
 		int count = 0;
 		int index = 0;

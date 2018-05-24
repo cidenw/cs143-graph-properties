@@ -134,6 +134,53 @@ public class VertexPair {
     }
     // public void
 
+    public void printPath(Vector<Vertex> path) {
+    	for(int i=0; i<path.size(); i++) {
+    		System.out.print(path.get(i).name+"->");
+    	}
+    	System.out.println();
+    }
+    public double getNumberOfShortestPathPassingNode(Vertex node, int shortestPath) {
+    	int numberOfPaths = 0;
+    	if(!pathListContainsNode(node, shortestPath)) {
+			return numberOfPaths;
+		}
+    	int numberOfPathsContainingNode = 0;
+    	for(int i=0; i<pathList.size(); i++) {
+    		
+    		if(pathList.get(i).size()-1 == shortestPath) {
+    			if(containsNode(pathList.get(i), node)) {
+    				numberOfPathsContainingNode++;
+    			}
+    			//printPath(pathList.get(i));
+    			numberOfPaths++;	
+    		}
+    	}
+    	return (double)numberOfPathsContainingNode/(double)numberOfPaths;
+    }
+    private boolean pathListContainsNode(Vertex node, int shortestPath) {
+    	for(int j=0; j<pathList.size(); j++) {
+    		Vector<Vertex> path = pathList.get(j);
+    		if(path.size()-1 != shortestPath) {
+    			continue;
+    		}
+    		for(int i=0; i<path.size(); i++) {
+        		if(path.get(i).name.equals(node.name)) {
+        			return true;
+        		}
+        	}
+    	}
+    	return false;
+    }
+    private boolean containsNode(Vector<Vertex> path, Vertex node) {
+    	for(int i=0; i<path.size(); i++) {
+    		if(path.get(i).name.equals(node.name)) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
     public class Paths {
 
         public Vector<Vertex> Path = new Vector<Vertex>();
