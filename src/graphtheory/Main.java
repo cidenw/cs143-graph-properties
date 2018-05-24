@@ -22,4 +22,10 @@ public class Main {
 3. determinme if cyclic
 4. connectivity 
 5. edge connectivity
+6. there is a clique or not
+7. maximum matching
+8. degree centrality
+9. betweenness centrality
+10. closeness centrality
+11. block
 */
