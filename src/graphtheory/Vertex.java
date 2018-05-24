@@ -19,6 +19,11 @@ public class Vertex implements Comparable {
     public Point location;
     public boolean wasFocused;
     public boolean wasClicked;
+    public boolean setWhite;
+    public boolean setRed;
+    public boolean setBlue;
+    public boolean setGreen;
+    public boolean setYellow;
     private int size1 = 30;
     private int size2 = 40;
     public Vector<Vertex> connectedVertices;
@@ -69,6 +74,16 @@ public class Vertex implements Comparable {
             g.setColor(Color.red);
         } else if (wasFocused) {
             g.setColor(Color.blue);
+        } else if(setWhite) {
+            g.setColor(Color.white);       	
+        } else if(setRed) {
+            g.setColor(Color.red);
+        } else if(setGreen) {
+            g.setColor(Color.green);        	
+        } else if(setBlue) {
+            g.setColor(Color.blue);        	
+        } else if(setYellow) {
+            g.setColor(Color.yellow);
         } else {
             g.setColor(Color.black);
         }

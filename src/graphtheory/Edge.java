@@ -17,6 +17,11 @@ public class Edge {
     public Vertex vertex2;
     public boolean wasFocused;
     public boolean wasClicked;
+    public boolean setWhite;
+    public boolean setRed;
+    public boolean setBlue;
+    public boolean setGreen;
+    public boolean setYellow;
 
     public Edge(Vertex v1, Vertex v2) {
         vertex1 = v1;
@@ -28,6 +33,16 @@ public class Edge {
             g.setColor(Color.red);
         } else if (wasFocused) {
             g.setColor(Color.blue);
+        } else if(setWhite) {
+            g.setColor(Color.white);       	
+        } else if(setRed) {
+            g.setColor(Color.red);
+        } else if(setGreen) {
+            g.setColor(Color.green);        	
+        } else if(setBlue) {
+            g.setColor(Color.blue);        	
+        } else if(setYellow) {
+            g.setColor(Color.yellow);
         } else {
             g.setColor(Color.black);
         }

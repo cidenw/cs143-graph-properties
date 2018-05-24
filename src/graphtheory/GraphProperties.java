@@ -87,6 +87,56 @@ public class GraphProperties {
 		return null;
 	}
 	
+	
+	
+	public void setNodeColor(Vertex aVertex, int color) {
+		switch(color) {
+		case 0:
+			aVertex.setWhite = true;
+			break;
+		case 1:
+			aVertex.setRed = true;
+			break;
+		case 2:
+			aVertex.setBlue = true;
+			break;
+		case 3:
+			aVertex.setGreen = true;
+			break;
+		case 4:
+			aVertex.setYellow = true;
+			break;
+		default:
+			
+			break;
+		}
+	}
+	
+	public void setEdgeColor(Edge anEdge, int color) {
+		switch(color) {
+		case 0:
+			anEdge.setWhite = true;
+			break;
+		case 1:
+			anEdge.setRed = true;
+			break;
+		case 2:
+			anEdge.setBlue = true;
+			break;
+		case 3:
+			anEdge.setGreen = true;
+			break;
+		case 4:
+			anEdge.setYellow = true;
+			break;
+		default:
+			
+			break;
+		}
+	}
+	
+	
+	
 	public double[] getClosenessCentrality(Vector<Vertex> vList, Vector<Edge> eList){
 		double[] closenessCentralities = new double[vList.size()];
 		for(int i=0; i<vList.size(); i++) {
@@ -128,7 +178,7 @@ public class GraphProperties {
 	}
 	
 	
-	
+
 	public int[][] getDegreeCentrality(Vector<Vertex> vList, Vector<Edge> eList){
 		int[][] degreeCentralities = new int[vList.size()][2];
 		
