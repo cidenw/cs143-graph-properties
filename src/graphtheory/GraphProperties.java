@@ -464,16 +464,20 @@ public class GraphProperties {
 		 * if(adjacentNodes.size() == 1) { return false; }
 		 */
 		for (int i = 0; i < adjacentNodes.size(); i++) {
+			if (start == adjacentNodes.get(i) && parent != start) {
+				 System.out.println(parent + "-" + adjacentNodes.get(i));
+				 return true;
+			}
 			if (!isVisited[adjacentNodes.get(i)]) {
 				return DFSCycle(isVisited, adjacentNodes.get(i), start, vertex);
 //			} else {
 //				System.out.println(adjacentNodes.get(index));
 //				return true;
 //			}
-			 } else if (start == adjacentNodes.get(i) && parent != start) {
-			 System.out.println(parent + "-" + adjacentNodes.get(i));
-			 return true;
-			 }
+			} else if (start == adjacentNodes.get(i) && parent != start) {
+				 System.out.println(parent + "-" + adjacentNodes.get(i));
+				 return true;
+			} 
 		}
 		return false;
 	}

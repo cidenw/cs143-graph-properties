@@ -80,7 +80,7 @@ public class Canvas {
         item.addActionListener(new MenuListener());
         menuOptions1.add(item);
         item = new JMenuItem("Grab Tool");
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK));
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK));
         item.addActionListener(new MenuListener());
         menuOptions1.add(item);
         item = new JMenuItem("Remove Tool");
