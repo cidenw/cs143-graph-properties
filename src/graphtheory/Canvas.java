@@ -131,6 +131,10 @@ public class Canvas {
         //item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK));
         item.addActionListener(new MenuListener());
         menuOptions3.add(item);
+        item = new JMenuItem("Show Blocks");
+        //item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK));
+        item.addActionListener(new MenuListener());
+        menuOptions3.add(item);
 
         menuBar.add(menuOptions);
         menuBar.add(menuOptions1);
@@ -388,6 +392,8 @@ public class Canvas {
             	gP.showMatching();
             } else if (command.equals("Show Clique")) {
             	gP.showClique();
+            } else if (command.equals("Show Blocks")) {
+            	gP.showBlocks();
             } 
             
             refresh();
