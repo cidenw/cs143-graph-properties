@@ -339,6 +339,9 @@ public class GraphProperties {
 	// }
 
 	public ArrayList<Integer[]> edgeConnectivity() {
+		if(vpList == null) {
+			return null;
+		}
 		ArrayList<ArrayList<Integer[]>> listOfMinCuts = new ArrayList<ArrayList<Integer[]>>();
 		for (int i = 0; i < vpList.size(); i++) {
 			int s = Integer.parseInt(vpList.get(i).vertex1.name);
@@ -385,6 +388,9 @@ public class GraphProperties {
 	}
 
 	public int countComponents() {
+		if(adjacencyMatrix == null) {
+			return 0;
+		}
 		int count = 0;
 		//int index = 0;
 		int noOfVertex = adjacencyMatrix.length;
@@ -425,6 +431,9 @@ public class GraphProperties {
 	}
 
 	public boolean isConnected() {
+		if(adjacencyMatrix == null) {
+			return false;
+		}
 		for (int j = 0; j < adjacencyMatrix[0].length; j++) {
 			boolean hasOne = false;
 			for (int i = 0; i < adjacencyMatrix.length; i++) {
@@ -605,7 +614,9 @@ public class GraphProperties {
 
 	public void showBlocks() {
 		resetColors();
-		System.out.println("SIZEEEEEEEEE" + this.blocks.size());
+		if(this.blocks == null) {
+			return;
+		}
 		for(int i=0; i<this.blocks.size(); i++) {
 			for(int j=0; j<this.blocks.get(i).size(); j++) {
 				if(i%2==0) {
@@ -623,6 +634,9 @@ public class GraphProperties {
 	
 	public void showCutEdges() {
 		resetColors();
+		if(this.edgeConnectivityEdges == null) {
+			return;
+		}
 		for (int i = 0; i < this.edgeConnectivityEdges.size(); i++) {
 			getVertex(edgeConnectivityEdges.get(i)[0]).setBlue = true;
 			getVertex(edgeConnectivityEdges.get(i)[1]).setBlue = true;
@@ -645,6 +659,9 @@ public class GraphProperties {
 
 	public void showMatching() {
 		resetColors();
+		if(this.maximumMatching == null) {
+			return;
+		}
 		for (int i = 0; i < this.maximumMatching.size(); i++) {
 			getVertex(maximumMatching.get(i)[0].intValue()).setRed = true;
 			getVertex(maximumMatching.get(i)[1].intValue()).setRed = true;
@@ -654,6 +671,9 @@ public class GraphProperties {
 	}
 
 	public void resetColors() {
+		if(vList == null) {
+			return;
+		}
 		for (int i = 0; i < vList.size(); i++) {
 			vList.get(i).setBlack = true;
 			vList.get(i).setBlue = false;
@@ -691,6 +711,9 @@ public class GraphProperties {
 	}
 
 	public void showGraphProperties(Graphics g, int x, int y, Vector<Vertex> vList, Vector<Edge> eList) {
+		if(edgeConnectivityEdges==null) {
+			return;
+		}
 		this.vList = vList;
 		this.eList = eList;
 		boolean isConnected = isConnected();
@@ -757,7 +780,9 @@ public class GraphProperties {
 
 	
 	public void showTable(String tableType, String[] columnNames, double[][] tableVals) {
-
+		if(tableVals == null) {
+			return;
+		}
 		System.out.println("TEST");
 		JFrame tableFrame = new JFrame();
 
