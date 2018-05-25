@@ -36,7 +36,7 @@ public class GraphProperties {
 	Vector<Edge> eList;
 	int cliqueNodes[];
 	ArrayList<Integer[]> maximumMatching;
-
+	ArrayList<ArrayList<Integer[]>> blocks;
 	public int[][] generateAdjacencyMatrix(Vector<Vertex> vList, Vector<Edge> eList) {
 		adjacencyMatrix = new int[vList.size()][vList.size()];
 
@@ -75,8 +75,16 @@ public class GraphProperties {
 		return adjacencyMatrix;
 	}
 
-	public int[] getBlock() {
-		return null;
+	public ArrayList<ArrayList<Integer[]>> getBlock() {
+		Block b = new Block(this.eList.size()*2);
+		for(int i=0; i<eList.size(); i++) {
+			System.out.println(eList.get(i).vertex1.name +" == " + eList.get(i).vertex2.name);
+			System.out.println(eList.get(i).vertex2.name +" == " + eList.get(i).vertex1.name);
+			b.addEdge(Integer.parseInt(eList.get(i).vertex1.name), Integer.parseInt(eList.get(i).vertex2.name));
+			b.addEdge(Integer.parseInt(eList.get(i).vertex2.name), Integer.parseInt(eList.get(i).vertex1.name));
+		}
+		System.out.println("BELOW ARE BLOCKS");
+		return b.BCC();
 	}
 
 	public void setNodeColor(Vertex aVertex, int color) {
@@ -609,6 +617,24 @@ public class GraphProperties {
 
 	}
 
+	public void showBlocks() {
+		resetColors();
+		System.out.println("SIZEEEEEEEEE" + this.blocks.size());
+		for(int i=0; i<this.blocks.size(); i++) {
+			for(int j=0; j<this.blocks.get(i).size(); j++) {
+				if(i%2==0) {
+					getVertex(this.blocks.get(i).get(j)[0]).setBlue = true;
+					getVertex(this.blocks.get(i).get(j)[1]).setBlue = true;
+					getEdge(this.blocks.get(i).get(j)[0], this.blocks.get(i).get(j)[1]).setBlue = true;
+				}else {
+					getVertex(this.blocks.get(i).get(j)[0]).setRed = true;
+					getVertex(this.blocks.get(i).get(j)[1]).setRed = true;
+					getEdge(this.blocks.get(i).get(j)[0], this.blocks.get(i).get(j)[1]).setRed = true;
+				}
+			}
+		}
+	}
+	
 	public void showCutEdges() {
 		resetColors();
 		for (int i = 0; i < this.edgeConnectivityEdges.size(); i++) {
@@ -727,7 +753,7 @@ public class GraphProperties {
 		this.degree_centrality = dc_formatted;
 		this.betweenness_centrality = bc_formatted;
 		this.closeness_centrality = cc_formatted;
-
+		blocks = getBlock();
 		// g.drawString("Betweenness: " /* + ADD FXN HERE */, x, y + 160);
 		// g.drawString("Closeness: ", x, y + 180);
 		// g.drawString("Distance: " /* + ADD FXN HERE */, x, y + 200);
@@ -743,6 +769,7 @@ public class GraphProperties {
 		return null;
 	}
 
+	
 	public void showTable(String tableType, String[] columnNames, double[][] tableVals) {
 
 		System.out.println("TEST");
