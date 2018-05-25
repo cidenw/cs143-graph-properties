@@ -442,45 +442,27 @@ public class GraphProperties {
 		return true;
 	}
 
-	public boolean checkCycle() {
-		int noOfVertex = adjacencyMatrix.length;
-		boolean isVisited[] = new boolean[noOfVertex];
-		for (int i = 0; i < noOfVertex; i++) {
-			// System.out.println("Node " + i);
-			if (DFSCycle(isVisited, i, i, i))
-				return true;
+	  public boolean checkCycle() {
+		    Cycle c = new Cycle(vList.size());
+		    for(int i=0; i<eList.size(); i++) {
+		      c.addEdge(Integer.parseInt(this.eList.get(i).vertex1.name), Integer.parseInt(this.eList.get(i).vertex2.name));
+		      //  c.addEdge(Integer.parseInt(this.eList.get(i).vertex2.name), Integer.parseInt(this.eList.get(i).vertex1.name));
+		      System.out.println(Integer.parseInt(this.eList.get(i).vertex2.name) + " -**- " + Integer.parseInt(this.eList.get(i).vertex1.name));
+		    }
+		    return c.isCyclic();
+//		    int noOfVertex = adjacencyMatrix.length;
+//		    for (int i = 0; i < noOfVertex; i++) {
+//		      boolean isVisited[] = new boolean[noOfVertex];
+//		      // System.out.println("Node " + i);
+//		      if (DFSCycle(isVisited, i, i, i)) {
+//		        return true;
+//		      }
+//		        
+//		    }
+//		    return false;
+		  }
 
-		}
-		return false;
-	}
 
-	public boolean DFSCycle(boolean isVisited[], int vertex, int start, int parent) {
-		isVisited[vertex] = true;
-		System.out.println("VERTEX :" + vertex);
-		ArrayList<Integer> adjacentNodes = getAdjacentNodes(vertex);
-		System.out.println(adjacentNodes);
-
-		/*
-		 * if(adjacentNodes.size() == 1) { return false; }
-		 */
-		for (int i = 0; i < adjacentNodes.size(); i++) {
-			if (start == adjacentNodes.get(i) && parent != start) {
-				 System.out.println(parent + "-" + adjacentNodes.get(i));
-				 return true;
-			}
-			if (!isVisited[adjacentNodes.get(i)]) {
-				return DFSCycle(isVisited, adjacentNodes.get(i), start, vertex);
-//			} else {
-//				System.out.println(adjacentNodes.get(index));
-//				return true;
-//			}
-			} else if (start == adjacentNodes.get(i) && parent != start) {
-				 System.out.println(parent + "-" + adjacentNodes.get(i));
-				 return true;
-			} 
-		}
-		return false;
-	}
 
 	public void bridgeUtil(int u, boolean visited[], int disc[], int low[], int parent[]) {
 
